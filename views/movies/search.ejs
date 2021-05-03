@@ -18,12 +18,11 @@
 
       </div>
     </form>
-    <% if (movies.length > 0) { %>
-      <p>TERM = <%= term %></p>
+    <% if (movies &&  movies.length > 0) { %>
       <div style="margin-bottom: 12px">SHOWING FIRST <%= movies.length %> RESULTS</div>
       <ul>
       <% movies.forEach(function(movie) { %>
-        <li><a href="/movie/xyz123"><%= movie["Title"] %></a></li>
+        <li><a href="/movie/<%= movie["imdbID"] %>"><%= movie["Title"] %></a></li>
       <% }); %>
       </ul>
     <% } %>

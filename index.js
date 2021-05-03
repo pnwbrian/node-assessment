@@ -3,10 +3,14 @@
 /*** Required External Modules ***/
 const express = require("express");
 const path = require("path");
+const fetch = require("node-fetch");
+
+require('dotenv').config()
 
 /*** App Variables ***/
 const app = express();
 const port = process.env.PORT || "8000";
+const OMDB_API_KEY = process.env.OMDB_API_KEY;
 
 /***  App Configuration ***/
 app.set("views", path.join(__dirname, "views"));
@@ -22,15 +26,26 @@ app.get("/", (req, res) => {
   res.render('index');
 });
 
+app.get("/movie/:movieId", (req, res) => {
+
+  let movieId = req.params.movieId;
+
+  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${movieId}&type=movie`;
+
+  fetch(url).then(function(response) {
+    response.json().then(function(data) {
+      console.log("DATA", data);
+      res.render("movies/movie", {movie: data, imdbID: movieId });
+    });
+  });
+
+});
 
 app.get("/search", (req, res) => {
 
   let term = "";
 
-  let movies = [
-    {Title: "Princess Bride"},
-    {Title: "Lord of the Rings"}
-  ];
+  let movies = [];
 
   res.render("movies/search", {movies: movies, term: term});
 });
@@ -42,21 +57,18 @@ app.post("/search", (req, res) => {
   console.log(req.params);
   console.log(req.body);
 
-  let movies = [
-    {Title: "Princess Bride"},
-    {Title: "Lord of the Rings"}
-  ];
+  let movies = [];
 
-  let url = 
+  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${term}&type=movie`;
 
   fetch(url).then(function(response) {
-    response.text().then(function(text) {
-      poemDisplay.textContent = text;
+    response.json().then(function(data) {
+      console.log("DATA", data);
+      res.render("movies/search", {movies: data['Search'], term: term});
     });
   });
 
-
-  res.render("movies/search", {movies: movies, term: term});
+  //res.render("movies/search", {movies: movies, term: term});
 
 });
 
