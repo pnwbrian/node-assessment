@@ -54,16 +54,18 @@ app.post("/search", (req, res) => {
 
   let term = req.body.term;
 
-  console.log(req.params);
-  console.log(req.body);
+  const page_requested = req.body.page || 1;
+
+  // console.log(req.params);
+  // console.log(req.body);
 
   let movies = [];
 
-  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${term}&type=movie`;
+  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${term}&type=movie&page=${page_requested}`;
 
   fetch(url).then(function(response) {
     response.json().then(function(data) {
-      console.log("DATA", data);
+      // console.log("DATA", data);
       res.render("movies/search", {movies: data['Search'], term: term});
     });
   });
