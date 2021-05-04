@@ -20,6 +20,26 @@
         <div>Starring <%= movie['Actors'] %></div>
       </div>
     </div>
+    <form action="/fav-notes" method="post" id="fav-notes-form">
+      <div class="form-group">
+
+      <div class="input-group">
+        <input class="form-control" type="text" name="notes" value="<%= notes %>" placeholder="Your notes">
+        <label for="favorite">Favorite?</label>
+        <input class="form-control" type="checkbox" name="favorite">
+        <input type="hidden" name="movieId" value="<%= imdbID %>">
+        <div class="input-group-append">
+          <button class="btn btn-outline-primary" type="submit">Save</button>
+        </div>
+      </div>
+
+      </div>
+    </form>
+
+    <p><%= notes %></p>
+    <% if (favorite) { %>
+      <strong>FAVORITE! :)</strong>
+    <% } %>
     <div style="margin-left: 25px">
       <button onclick="javascript:history.back()" class="btn btn-primary btn-sm">Back</button>
     </div>
