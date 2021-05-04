@@ -54,7 +54,9 @@ app.post("/search", (req, res) => {
 
   let term = req.body.term;
 
-  const page_requested = req.body.page || 1;
+  const page_num = req.body.page || 1;
+
+  const page_requested = Number.isInteger(page_num) ? Math.min(parseInt(page_num, 10),1) : 1;
 
   // console.log(req.params);
   // console.log(req.body);
