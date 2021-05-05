@@ -89,32 +89,39 @@ app.get("/search", (req, res) => {
 
   let movies = [];
 
-  res.render("movies/search", {movies: movies, term: term});
+  res.render("movies/search", {movies: movies, term: term, pages:1});
 });
 
 app.post("/search", (req, res) => {
 
   let term = req.body.term;
 
-  const page_num = req.body.page || 1;
+  let page_num = req.body.page || 1;
 
-  const page_requested = Number.isInteger(page_num) ? Math.min(parseInt(page_num, 10),1) : 1;
+  page_num = parseInt(page_num, 10);
+
+  if (!Number.isInteger(page_num)) page_num = 1;
 
   // console.log(req.params);
-  // console.log(req.body);
 
   let movies = [];
 
-  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${term}&type=movie&page=${page_requested}`;
+  let total_pagination_pages = 1;
+
+  const RESULTS_PER_OMDB_PAGE_QUERY = 10;
+
+  let url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${term}&type=movie&page=${page_num}`;
+
+  console.log(`search url= ${url}`);
 
   fetch(url).then(function(response) {
     response.json().then(function(data) {
       // console.log("DATA", data);
-      res.render("movies/search", {movies: data['Search'], term: term});
+      total_pagination_pages = Math.ceil(data["totalResults"]/RESULTS_PER_OMDB_PAGE_QUERY);
+      total_pagination_pages = Number.isInteger(total_pagination_pages) ? total_pagination_pages : 1;
+      res.render("movies/search", {movies: data['Search'], term: term, pages:total_pagination_pages});
     });
   });
-
-  //res.render("movies/search", {movies: movies, term: term});
 
 });
 
